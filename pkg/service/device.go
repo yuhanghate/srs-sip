@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/ossrs/go-oryx-lib/logger"
 	"sync"
 
 	"github.com/ossrs/srs-sip/pkg/utils"
@@ -114,7 +115,9 @@ func (dm *deviceManager) UpdateChannels(deviceID string, list ...ChannelInfo) {
 	}
 
 	for _, channel := range list {
+		//channel.ParentID = deviceID
 		device.ChannelMap.Store(channel.DeviceID, channel)
+		logger.Wf(nil, "DeviceID= %s channel= %s", deviceID, channel.DeviceID)
 	}
 	dm.devices.Store(deviceID, device)
 }
@@ -140,6 +143,11 @@ func (dm *deviceManager) GetAllVideoChannels() []ChannelInfo {
 		device.ChannelMap.Range(func(key, value interface{}) bool {
 			if utils.IsVideoChannel(value.(ChannelInfo).DeviceID) {
 				channels = append(channels, value.(ChannelInfo))
+				stringer := key.(string)
+				if "33021101111320010032" == stringer {
+					logger.I(nil, "")
+
+				}
 				return true
 			}
 			return true
